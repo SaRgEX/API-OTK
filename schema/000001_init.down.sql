@@ -1,0 +1,13 @@
+DROP TABLE product_price;
+DROP TABLE purchase;
+DROP TABLE "order";
+DROP TABLE order_status;
+DROP TABLE account;
+DROP TABLE status;
+DROP TABLE product_stack;
+DROP TABLE product;
+DROP TABLE warehouse;
+DROP TABLE manufacturer;
+DROP TABLE category;
+DROP TABLE address;
+DROP TABLE role;
