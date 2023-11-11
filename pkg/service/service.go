@@ -13,6 +13,10 @@ type Authorization interface {
 
 type Product interface {
 	Create(product model.Product) (int, error)
+	FindAll() ([]model.Product, error)
+	FindById(id int) (model.Product, error)
+	Update(id int, input model.UpdateProductInput) error
+	Delete(id int) error
 }
 
 type Address interface {
@@ -20,7 +24,8 @@ type Address interface {
 }
 
 type Order interface {
-	Create(accountId, addressId, productArticle, amount int, order_date, status string) (int, error)
+	Create(model.CreateInputOrder) (int, error)
+	View(accountId int) ([]model.Order, error)
 }
 
 type Purchase interface {

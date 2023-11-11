@@ -1,6 +1,7 @@
 package service
 
 import (
+	model "github.com/SaRgEX/Diplom/Model"
 	"github.com/SaRgEX/Diplom/pkg/repository"
 )
 
@@ -12,6 +13,10 @@ func NewOrderService(repo repository.Order) *OrderService {
 	return &OrderService{repo: repo}
 }
 
-func (s *OrderService) Create(accountId, addressId, productArticle, amount int, order_date, status string) (int, error) {
-	return s.repo.Create(accountId, addressId, productArticle, amount, order_date, status)
+func (s *OrderService) Create(model model.CreateInputOrder) (int, error) {
+	return s.repo.Create(model)
+}
+
+func (s *OrderService) View(accountId int) ([]model.Order, error) {
+	return s.repo.View(accountId)
 }

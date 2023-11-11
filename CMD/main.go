@@ -4,6 +4,7 @@ import (
 	"os"
 
 	server "github.com/SaRgEX/Diplom"
+	migrations "github.com/SaRgEX/Diplom/db"
 	"github.com/SaRgEX/Diplom/pkg/handler"
 	"github.com/SaRgEX/Diplom/pkg/repository"
 	"github.com/SaRgEX/Diplom/pkg/service"
@@ -22,7 +23,6 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
-
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
@@ -31,9 +31,13 @@ func main() {
 		SSLMode:  viper.GetString("db.sslmode"),
 		Password: os.Getenv("DB_PASSWORD"),
 	})
+
+	migrations.MigrateSQL(db, "postgres")
+
 	if err != nil {
-		logrus.Fatalf("failed to initialized database: %s", err.Error())
+		logrus.Fatalf("failed to initialize database: %s", err.Error())
 	}
+
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handler := handler.NewHandler(services)

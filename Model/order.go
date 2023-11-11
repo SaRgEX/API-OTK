@@ -2,8 +2,17 @@ package model
 
 type Order struct {
 	Id        int    `json:"-"`
-	Address   int    `json:"address"`
-	OrderDate string `json:"order_date"`
-	AccountId int    `json:"account_id"`
-	Status    string `json:"status"`
+	Address   int    `json:"address" db:"address"`
+	OrderDate string `json:"order_date" db:"order_date"`
+	AccountId int    `json:"account_id" db:"account_id"`
+	Status    string `json:"status" db:"status"`
+}
+
+type CreateInputOrder struct {
+	AccountId      int    `json:"-"`
+	ProductArticle int    `json:"product_article" binding:"required"`
+	Amount         int    `json:"amount" binding:"required"`
+	Address        int    `json:"address" binding:"required"`
+	OrderDate      string `json:"-"`
+	Status         string `json:"-"`
 }

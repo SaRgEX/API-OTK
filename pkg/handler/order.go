@@ -1,22 +1,14 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
+	model "github.com/SaRgEX/Diplom/Model"
 	"github.com/gin-gonic/gin"
 )
 
-type Order struct {
-	ProductArticle int    `json:"product_article" binding:"required"`
-	Amount         int    `json:"amount" binding:"required"`
-	Address        int    `json:"address" binding:"required"`
-	OrderDate      string `json:"order_date" binding:"required"`
-	Status         string `json:"status" binding:"required"`
-}
-
 func (h *Handler) createOrder(c *gin.Context) {
-	var input Order
+	var input model.CreateInputOrder
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -28,9 +20,9 @@ func (h *Handler) createOrder(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+	input.AccountId = accountId
 
-	fmt.Printf("account_id type: %v, address_id type: %v, product_article type: %v, amount type: %v", accountId, input.Address, input.ProductArticle, input.Amount)
-	id, err := h.services.Order.Create(accountId, input.Address, input.ProductArticle, input.Amount, input.OrderDate, input.Status)
+	id, err := h.services.Order.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -39,4 +31,28 @@ func (h *Handler) createOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
+}
+
+func (h *Handler) viewOrders(c *gin.Context) {
+	var accountId int
+
+	accountId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	input, err := h.services.Order.View(accountId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	for _, order := range input {
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"address":    order.Address,
+			"order_date": order.OrderDate,
+			"account_id": order.AccountId,
+			"status":     order.Status,
+		})
+	}
 }

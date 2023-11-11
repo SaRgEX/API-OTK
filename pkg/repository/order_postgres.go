@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	model "github.com/SaRgEX/Diplom/Model"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,7 +15,7 @@ func NewOrderPostgres(db *sqlx.DB) *OrderPostgres {
 	return &OrderPostgres{db: db}
 }
 
-func (r *OrderPostgres) Create(accountId, addressId, productArticle, amount int, order_date, status string) (int, error) {
+func (r *OrderPostgres) Create(model model.CreateInputOrder) (int, error) {
 	var id int
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -22,10 +23,10 @@ func (r *OrderPostgres) Create(accountId, addressId, productArticle, amount int,
 	}
 
 	createOrderQuery := fmt.Sprintf(
-		"INSERT INTO %s (address, order_date, account_id, status) VALUES ($1, $2, $3, $4) RETURNING id",
+		"INSERT INTO %s (address, account_id, order_date, status) VALUES ($1, $2, DEFAULT, DEFAULT) RETURNING id",
 		orderTable,
 	)
-	row := tx.QueryRow(createOrderQuery, addressId, order_date, accountId, status)
+	row := tx.QueryRow(createOrderQuery, model.Address, model.AccountId)
 	if err := row.Scan(&id); err != nil {
 		tx.Rollback()
 		return 0, err
@@ -35,11 +36,21 @@ func (r *OrderPostgres) Create(accountId, addressId, productArticle, amount int,
 		"INSERT INTO %s (product_article, order_id, amount) VALUES ($1, $2, $3)",
 		purchaseTable,
 	)
-	_, err = tx.Exec(createPurchaseQuery, productArticle, id, amount)
+	_, err = tx.Exec(createPurchaseQuery, model.ProductArticle, id, model.Amount)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
 	return id, tx.Commit()
+}
+
+func (r *OrderPostgres) View(accountId int) ([]model.Order, error) {
+	var orderModel []model.Order
+	getOrderQuery := fmt.Sprintf(
+		"SELECT address, order_date, account_id, status FROM %s WHERE account_id = $1",
+		orderTable)
+
+	err := r.db.Select(&orderModel, getOrderQuery, accountId)
+	return orderModel, err
 }

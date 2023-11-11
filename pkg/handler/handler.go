@@ -24,8 +24,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	products := router.Group("/products")
 	{
-		products.GET("/view", h.findAll)
-		products.POST("/create", h.createProduct)
+		products.GET("/", h.findAll)
+		products.POST("/", h.createProduct)
 
 		products.GET(":id/", h.findById)
 		products.PUT(":id/", h.updateProduct)
@@ -44,7 +44,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		order := api.Group("/order")
 		{
-			order.GET("/")
+			order.GET("/", h.viewOrders)
 			order.POST("/", h.createOrder)
 			order.PUT("/")
 			order.DELETE("/")
