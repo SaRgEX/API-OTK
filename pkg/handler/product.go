@@ -8,6 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create product
+// @Tags product
+// @Description create product
+// @ID create-product
+// @Accept  json
+// @Produce  json
+// @Param input body model.Product true "product info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /products [post]
 func (h *Handler) createProduct(c *gin.Context) {
 	var input model.Product
 
@@ -26,13 +38,24 @@ func (h *Handler) createProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"article": id,
 	})
-
 }
 
 type getAllProductsResponse struct {
 	Data []model.Product `json:"data"`
 }
 
+// @Summary Get all products
+// @Tags product
+// @Security ApiKeyAuth
+// @Description get all products
+// @ID get-all-products
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /products [get]
 func (h *Handler) findAll(c *gin.Context) {
 	input, err := h.services.Product.FindAll()
 	if err != nil {
@@ -45,6 +68,18 @@ func (h *Handler) findAll(c *gin.Context) {
 	})
 }
 
+// @Summary Get product
+// @Tags product
+// @Security ApiKeyAuth
+// @Description get product
+// @ID get-product
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /products/{id} [get]
 func (h *Handler) findById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -62,6 +97,20 @@ func (h *Handler) findById(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
+// @Summary Update product
+// @Tags product
+// @Security ApiKeyAuth
+// @Description update product
+// @ID update-product
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Product ID"
+// @Param input body model.UpdateProductInput true "Product data"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /products/{id} [put]
 func (h *Handler) updateProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -86,6 +135,19 @@ func (h *Handler) updateProduct(c *gin.Context) {
 	})
 }
 
+// @Summary Delete product
+// @Tags product
+// @Security ApiKeyAuth
+// @Description delete product
+// @ID delete-product
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Product ID"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /products/{id} [delete]
 func (h *Handler) deleteProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 

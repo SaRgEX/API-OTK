@@ -7,6 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create order
+// @Tags order
+// @Security ApiKeyAuth
+// @Description create order
+// @ID create-order
+// @Accept  json
+// @Produce  json
+// @Param input body model.CreateInputOrder true "order info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /order [post]
 func (h *Handler) createOrder(c *gin.Context) {
 	var input model.CreateInputOrder
 
@@ -33,6 +46,18 @@ func (h *Handler) createOrder(c *gin.Context) {
 	})
 }
 
+// @Summary View orders
+// @Tags order
+// @Security ApiKeyAuth
+// @Description view orders
+// @ID view-orders
+// @Accept  json
+// @Produce  json
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /order [get]
 func (h *Handler) viewOrders(c *gin.Context) {
 	var accountId int
 

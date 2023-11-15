@@ -7,6 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Create address
+// @Tags address
+// @Security ApiKeyAuth
+// @Description create address
+// @ID create-address
+// @Accept  json
+// @Produce  json
+// @Param input body model.Address true "address info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /address [post]
 func (h *Handler) createAddress(c *gin.Context) {
 	var input model.Address
 
