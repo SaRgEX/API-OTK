@@ -2,19 +2,20 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
-	server "github.com/SaRgEX/Diplom"
 	migrations "github.com/SaRgEX/Diplom/db"
+	server "github.com/SaRgEX/Diplom/internal"
+	"github.com/SaRgEX/Diplom/internal/config"
+	"github.com/SaRgEX/Diplom/internal/storage/postgres"
 	"github.com/SaRgEX/Diplom/pkg/handler"
 	"github.com/SaRgEX/Diplom/pkg/repository"
 	"github.com/SaRgEX/Diplom/pkg/service"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 // @title           OTK API
@@ -29,36 +30,30 @@ import (
 // @name Authorization
 
 func main() {
+	cfg := config.MustLoad()
+
+	fmt.Println(cfg)
+
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	if err := initConfig(); err != nil {
-		logrus.Fatalf("error initialization configs: %s", err.Error())
-	}
+	logrus.Info("Starting server")
+	logrus.Debug("Debug mode")
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
-	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
-
-	migrations.MigrateSQL(db, "postgres")
-
+	db, err := postgres.NewPostgresDB(cfg.Database)
 	if err != nil {
-		logrus.Fatalf("failed to initialize database: %s", err.Error())
+		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
-	repos := repository.NewRepository(db)
+	if err := migrations.MigrateSQL(db.DB, "postgres"); err != nil {
+		logrus.Fatalf("failed to apply migrations: %s", err.Error())
+	}
+
+	repos := repository.NewRepository(db.DB)
 	services := service.NewService(repos)
 	handler := handler.NewHandler(services)
 	srv := new(server.Server)
 
 	go func() {
-		if err := srv.Run(viper.GetString("http.port"), handler.InitRoutes()); err != nil {
+		if err := srv.Run(cfg.HTTPServer, handler.InitRoutes()); err != nil {
 			logrus.Fatalf("error occured while running http server: %s", err.Error())
 		}
 	}()
@@ -73,13 +68,7 @@ func main() {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 
-	if err := db.Close(); err != nil {
+	if err := db.DB.Close(); err != nil {
 		logrus.Errorf("error occured on db connection close: %s", err.Error())
 	}
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }
