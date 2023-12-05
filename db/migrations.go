@@ -1,17 +1,18 @@
 package migrations
 
 import (
+	"fmt"
+
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 )
 
 func MigrateSQL(conn *sqlx.DB, driverName string) error {
-	driver, _ := postgres.WithInstance(conn.DB, &postgres.Config{})
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		driverName,
-		driver,
+	m, err := migrate.New(
+		"file://db//migrations",
+		"postgres://postgres:123@localhost:5436/postgres?sslmode=disable",
 	)
 	if err != nil {
 		return err
@@ -19,5 +20,8 @@ func MigrateSQL(conn *sqlx.DB, driverName string) error {
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return err
 	}
+
+	fmt.Println("Migrations applied")
+
 	return nil
 }

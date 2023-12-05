@@ -1,5 +1,6 @@
 package repository
 
+<<<<<<< HEAD
 import (
 	"fmt"
 
@@ -7,6 +8,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+=======
+>>>>>>> 3ca8a5dc40f54cedc3d6c5ac3e8dc0fb0a0b87fd
 const (
 	accountTable  = "account"
 	productTable  = "product"
@@ -14,27 +17,3 @@ const (
 	purchaseTable = "purchase"
 	addressTable  = "address"
 )
-
-type Config struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	DBName   string
-	SSLMode  string
-}
-
-func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
-}

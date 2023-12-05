@@ -95,7 +95,7 @@ VALUES('Машиностроителей', '30/2', '101', 64000, 'Курган')
 CREATE TABLE warehouse
 (
     id SERIAL NOT NULL PRIMARY KEY,
-    address INTEGER NOT NULL,
+    address INTEGER NOT NULL UNIQUE,
     FOREIGN KEY (address) REFERENCES address(id)
 );
 
