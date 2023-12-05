@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	server "github.com/SaRgEX/Diplom"
-	migrations "github.com/SaRgEX/Diplom/db"
 	"github.com/SaRgEX/Diplom/pkg/handler"
 	"github.com/SaRgEX/Diplom/pkg/repository"
 	"github.com/SaRgEX/Diplom/pkg/service"
@@ -46,7 +45,7 @@ func main() {
 		Password: os.Getenv("DB_PASSWORD"),
 	})
 
-	migrations.MigrateSQL(db, "postgres")
+	// migrations.MigrateSQL(db, "postgres")
 
 	if err != nil {
 		logrus.Fatalf("failed to initialize database: %s", err.Error())
