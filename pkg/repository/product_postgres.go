@@ -35,9 +35,10 @@ func (r *ProductPostgres) Create(product model.Product) (int, error) {
 	return id, nil
 }
 
-func (r *ProductPostgres) FindAll() ([]model.Product, error) {
-	var products []model.Product
-	query := fmt.Sprintf("SELECT name, category, manufacturer, price, image, description FROM %s", productTable)
+func (r *ProductPostgres) FindAll() ([]model.ProductsOutput, error) {
+	var products []model.ProductsOutput
+	query := fmt.Sprintf(`SELECT article, name, category, manufacturer, price, image, description, PS.amount as amount FROM %s
+	INNER JOIN %s PS ON PS.product_article = product.article`, productTable, productStackTable)
 	err := r.db.Select(&products, query)
 	return products, err
 }

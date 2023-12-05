@@ -13,7 +13,7 @@ type Authorization interface {
 
 type Product interface {
 	Create(product model.Product) (int, error)
-	FindAll() ([]model.Product, error)
+	FindAll() ([]model.ProductsOutput, error)
 	FindById(id int) (model.Product, error)
 	Update(id int, input model.UpdateProductInput) error
 	Delete(id int) error

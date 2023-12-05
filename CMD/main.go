@@ -7,14 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-<<<<<<< HEAD
-	server "github.com/SaRgEX/Diplom"
-=======
 	migrations "github.com/SaRgEX/Diplom/db"
 	server "github.com/SaRgEX/Diplom/internal"
 	"github.com/SaRgEX/Diplom/internal/config"
 	"github.com/SaRgEX/Diplom/internal/storage/postgres"
->>>>>>> 3ca8a5dc40f54cedc3d6c5ac3e8dc0fb0a0b87fd
 	"github.com/SaRgEX/Diplom/pkg/handler"
 	"github.com/SaRgEX/Diplom/pkg/repository"
 	"github.com/SaRgEX/Diplom/pkg/service"
@@ -39,28 +35,8 @@ func main() {
 	fmt.Println(cfg)
 
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-<<<<<<< HEAD
-	if err := initConfig(); err != nil {
-		logrus.Fatalf("error initialization configs: %s", err.Error())
-	}
-
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
-	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
-
-	// migrations.MigrateSQL(db, "postgres")
-=======
 	logrus.Info("Starting server")
 	logrus.Debug("Debug mode")
->>>>>>> 3ca8a5dc40f54cedc3d6c5ac3e8dc0fb0a0b87fd
 
 	db, err := postgres.NewPostgresDB(cfg.Database)
 	if err != nil {

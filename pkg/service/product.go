@@ -17,7 +17,7 @@ func (s *ProductService) Create(product model.Product) (int, error) {
 	return s.repo.Create(product)
 }
 
-func (s *ProductService) FindAll() ([]model.Product, error) {
+func (s *ProductService) FindAll() ([]model.ProductsOutput, error) {
 	return s.repo.FindAll()
 }
 

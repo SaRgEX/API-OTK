@@ -41,7 +41,7 @@ func (h *Handler) createProduct(c *gin.Context) {
 }
 
 type getAllProductsResponse struct {
-	Data []model.Product `json:"data"`
+	Data []model.ProductsOutput `json:"data"`
 }
 
 // @Summary Get all products
@@ -57,14 +57,14 @@ type getAllProductsResponse struct {
 // @Failure default {object} errorResponse
 // @Router /products [get]
 func (h *Handler) findAll(c *gin.Context) {
-	input, err := h.services.Product.FindAll()
+	output, err := h.services.Product.FindAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, getAllProductsResponse{
-		Data: input,
+		Data: output,
 	})
 }
 
