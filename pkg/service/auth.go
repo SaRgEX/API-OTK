@@ -75,3 +75,7 @@ func generatePasswordHash(password string) string {
 
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
+
+func (s *AuthService) Logout(token string) error {
+	return s.repo.Logout(token)
+}

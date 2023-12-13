@@ -37,8 +37,9 @@ func (r *ProductPostgres) Create(product model.Product) (int, error) {
 
 func (r *ProductPostgres) FindAll() ([]model.ProductsOutput, error) {
 	var products []model.ProductsOutput
-	query := fmt.Sprintf(`SELECT article, name, category, manufacturer, price, image, description, PS.amount as amount FROM %s
-	INNER JOIN %s PS ON PS.product_article = product.article`, productTable, productStackTable)
+	query := fmt.Sprintf(`SELECT article, name, category, manufacturer, price, image, description, SUM(ps.amount) as amount FROM %s
+	INNER JOIN %s AS ps ON article = ps.product_article
+	GROUP BY article`, productTable, productStackTable)
 	err := r.db.Select(&products, query)
 	return products, err
 }

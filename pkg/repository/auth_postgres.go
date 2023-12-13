@@ -31,3 +31,9 @@ func (r *AuthPostgres) GetUser(login, password string) (model.Account, error) {
 	err := r.db.Get(&user, query, login, password)
 	return user, err
 }
+
+func (r *AuthPostgres) Logout(token string) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE token=$1", accountTable)
+	_, err := r.db.Exec(query, token)
+	return err
+}

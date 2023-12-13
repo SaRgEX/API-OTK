@@ -66,8 +66,10 @@ CREATE TABLE product
     price INTEGER NOT NULL,
     image VARCHAR(255),
     description VARCHAR(255) NOT NULL,
-    FOREIGN KEY (manufacturer) REFERENCES manufacturer(name),
-    FOREIGN KEY (category) REFERENCES category(name) 
+    FOREIGN KEY (manufacturer) REFERENCES manufacturer(name)
+    ON DELETE CASCADE,
+    FOREIGN KEY (category) REFERENCES category(name)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE product_price 
@@ -110,7 +112,6 @@ CREATE TABLE product_stack
     FOREIGN KEY (warehouse_id) REFERENCES warehouse(id),
     PRIMARY KEY(product_article, warehouse_id)
 );
-
 
 CREATE TABLE "order"
 (
@@ -163,3 +164,23 @@ CREATE TRIGGER update_product_stack_trigger
 AFTER INSERT ON purchase
 FOR EACH ROW
 EXECUTE FUNCTION update_product_stack();
+
+CREATE TRIGGER update_product_stack_trigger
+AFTER INSERT ON purchase
+FOR EACH ROW
+EXECUTE FUNCTION update_product_stack();
+
+CREATE FUNCTION insert_product_stack_zero()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO product_stack
+  VALUES
+    (NEW.article, 1, 0);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_insert_product_stack_trigger
+AFTER INSERT ON product
+FOR EACH ROW
+EXECUTE FUNCTION insert_product_stack_zero();

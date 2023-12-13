@@ -9,6 +9,7 @@ type Authorization interface {
 	CreateUser(user model.Account) (int, error)
 	GenerateToken(login, password string) (string, error)
 	ParseToken(token string) (int, error)
+	Logout(token string) error
 }
 
 type Product interface {
@@ -31,12 +32,24 @@ type Order interface {
 type Purchase interface {
 }
 
+type Category interface {
+	FindAll() ([]model.Category, error)
+	Create(model.Category) (int, error)
+}
+
+type Manufacturer interface {
+	FindAll() ([]model.Manufacturer, error)
+	Create(model.Manufacturer) (int, error)
+}
+
 type Service struct {
 	Authorization
 	Product
 	Address
 	Order
 	Purchase
+	Category
+	Manufacturer
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -45,5 +58,7 @@ func NewService(repos *repository.Repository) *Service {
 		Product:       NewProductService(repos.Product),
 		Address:       NewAddressService(repos.Address),
 		Order:         NewOrderService(repos.Order),
+		Category:      NewCategoryService(repos.Category),
+		Manufacturer:  NewManufacturerService(repos.Manufacturer),
 	}
 }

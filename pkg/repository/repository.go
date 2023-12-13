@@ -8,6 +8,7 @@ import (
 type Authorization interface {
 	CreateUser(user model.Account) (int, error)
 	GetUser(login, password string) (model.Account, error)
+	Logout(token string) error
 }
 
 type Product interface {
@@ -30,12 +31,24 @@ type Order interface {
 type Purchase interface {
 }
 
+type Category interface {
+	FindAll() ([]model.Category, error)
+	Create(input model.Category) (int, error)
+}
+
+type Manufacturer interface {
+	FindAll() ([]model.Manufacturer, error)
+	Create(input model.Manufacturer) (int, error)
+}
+
 type Repository struct {
 	Authorization
 	Product
 	Address
 	Order
 	Purchase
+	Category
+	Manufacturer
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -44,5 +57,7 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Product:       NewProductPostgres(db),
 		Address:       NewAddressPostgres(db),
 		Order:         NewOrderPostgres(db),
+		Category:      NewCategoryPostgres(db),
+		Manufacturer:  NewManufacturerPostgres(db),
 	}
 }

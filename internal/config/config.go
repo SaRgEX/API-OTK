@@ -56,7 +56,7 @@ func MustLoad() *Config {
 		log.Fatalf("error loading configs: %s", err.Error())
 	}
 
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("../.env"); err != nil {
 		log.Fatalf("error loading env variables: %s", err.Error())
 	}
 
@@ -71,7 +71,7 @@ func MustLoad() *Config {
 
 func initConfig() error {
 	viper.SetConfigName("config")
-	viper.AddConfigPath("config")
+	viper.AddConfigPath("../config")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {

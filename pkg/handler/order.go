@@ -19,7 +19,7 @@ import (
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /order [post]
+// @Router /api/order [post]
 func (h *Handler) createOrder(c *gin.Context) {
 	var input model.CreateInputOrder
 
@@ -57,7 +57,7 @@ func (h *Handler) createOrder(c *gin.Context) {
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /order [get]
+// @Router /api/order [get]
 func (h *Handler) viewOrders(c *gin.Context) {
 	var accountId int
 

@@ -11,7 +11,7 @@ import (
 
 func MigrateSQL(conn *sqlx.DB, driverName string) error {
 	m, err := migrate.New(
-		"file://db//migrations",
+		"file:..//db//migrations",
 		"postgres://postgres:123@localhost:5436/postgres?sslmode=disable",
 	)
 	if err != nil {

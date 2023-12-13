@@ -19,7 +19,7 @@ import (
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /address [post]
+// @Router /api/address [post]
 func (h *Handler) createAddress(c *gin.Context) {
 	var input model.Address
 

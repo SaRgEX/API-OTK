@@ -54,7 +54,6 @@ type signInInput struct {
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-in [post]
-
 func (h *Handler) signIn(c *gin.Context) {
 	var input signInInput
 
@@ -70,5 +69,18 @@ func (h *Handler) signIn(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
+	})
+}
+
+func (h *Handler) logout(c *gin.Context) {
+	err := h.services.Authorization.Logout(c.GetHeader("Authorization"))
+
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.Header("Authorization", "")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "logout",
 	})
 }
