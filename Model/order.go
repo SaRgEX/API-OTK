@@ -16,3 +16,13 @@ type CreateInputOrder struct {
 	OrderDate      string `json:"-"`
 	Status         string `json:"-"`
 }
+
+type OrderOutput struct {
+	OrderDate string `json:"order_date" db:"order_date"`
+	Status    string `json:"status" db:"status"`
+
+	Street    string `json:"street" db:"street"`
+	House     string `json:"house" db:"house"`
+	Apartment string `json:"apartment" db:"apartment"`
+	City      string `json:"city" db:"city"`
+}

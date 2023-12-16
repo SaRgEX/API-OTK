@@ -26,7 +26,7 @@ type Address interface {
 
 type Order interface {
 	Create(model.CreateInputOrder) (int, error)
-	View(accountId int) ([]model.Order, error)
+	View(accountId int) ([]model.OrderOutput, error)
 }
 
 type Purchase interface {

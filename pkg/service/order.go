@@ -17,6 +17,6 @@ func (s *OrderService) Create(model model.CreateInputOrder) (int, error) {
 	return s.repo.Create(model)
 }
 
-func (s *OrderService) View(accountId int) ([]model.Order, error) {
+func (s *OrderService) View(accountId int) ([]model.OrderOutput, error) {
 	return s.repo.View(accountId)
 }

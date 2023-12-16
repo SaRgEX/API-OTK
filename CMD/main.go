@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path"
+	"runtime"
 	"syscall"
 
 	migrations "github.com/SaRgEX/Diplom/db"
@@ -36,6 +38,15 @@ func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	logrus.Info("Starting server")
 	logrus.Debug("Debug mode")
+	logrus.SetReportCaller(true)
+
+	logrus.SetFormatter(&logrus.TextFormatter{
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			_, filename := path.Split(f.File)
+			filename = fmt.Sprintf("%s:%d", filename, f.Line)
+			return "", filename
+		},
+	})
 
 	db, err := postgres.NewPostgresDB(cfg.Database)
 	if err != nil {

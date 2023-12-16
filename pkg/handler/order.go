@@ -46,6 +46,10 @@ func (h *Handler) createOrder(c *gin.Context) {
 	})
 }
 
+type OrdeData struct {
+	Data []model.Order `json:"data"`
+}
+
 // @Summary View orders
 // @Tags order
 // @Security ApiKeyAuth
@@ -67,17 +71,11 @@ func (h *Handler) viewOrders(c *gin.Context) {
 		return
 	}
 
-	input, err := h.services.Order.View(accountId)
+	output, err := h.services.Order.View(accountId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	for _, order := range input {
-		c.JSON(http.StatusOK, map[string]interface{}{
-			"address":    order.Address,
-			"order_date": order.OrderDate,
-			"account_id": order.AccountId,
-			"status":     order.Status,
-		})
-	}
+	c.JSON(http.StatusOK, &output)
+
 }

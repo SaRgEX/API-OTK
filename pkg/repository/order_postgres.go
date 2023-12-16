@@ -45,10 +45,12 @@ func (r *OrderPostgres) Create(model model.CreateInputOrder) (int, error) {
 	return id, tx.Commit()
 }
 
-func (r *OrderPostgres) View(accountId int) ([]model.Order, error) {
-	var orderModel []model.Order
+func (r *OrderPostgres) View(accountId int) ([]model.OrderOutput, error) {
+	var orderModel []model.OrderOutput
 	getOrderQuery := fmt.Sprintf(
-		"SELECT address, order_date, account_id, status FROM %s WHERE account_id = $1",
+		`SELECT order_date, status, a.street, a.house, a.apartment, a.city FROM %s
+		JOIN address a ON address = a.id
+		WHERE account_id = $1`,
 		orderTable)
 
 	err := r.db.Select(&orderModel, getOrderQuery, accountId)
