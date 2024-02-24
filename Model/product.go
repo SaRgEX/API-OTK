@@ -30,10 +30,12 @@ type UpdateProductInput struct {
 	Price        *int    `json:"price"`
 	Image        *string `json:"image"`
 	Description  *string `json:"description"`
+	Amount       *int    `json:"amount"`
+	Warehouse    *int    `json:"warehouse_id"`
 }
 
 func (p *UpdateProductInput) Validate() error {
-	if p.Name == nil && p.Category == nil && p.Manufacturer == nil && p.Price == nil && p.Image == nil && p.Description == nil {
+	if p.Name == nil && p.Category == nil && p.Manufacturer == nil && p.Price == nil && p.Image == nil && p.Description == nil && p.Amount == nil && p.Warehouse == nil {
 		return errors.New("nothing to update")
 	}
 	return nil

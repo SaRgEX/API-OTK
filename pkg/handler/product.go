@@ -124,7 +124,7 @@ func (h *Handler) updateProduct(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Product.Update(id, input)
+	_, err = h.services.Product.Update(id, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

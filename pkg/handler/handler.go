@@ -21,6 +21,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	router.Use(CORSMiddleware())
 
+	router.Static("/static", "../ui")
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	auth := router.Group("/auth")
@@ -52,6 +54,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		manufacturer.POST("/", h.createManufacturer)
 	}
 
+	warehouse := router.Group("/warehouse")
+	{
+		warehouse.GET("/", h.findAllWarehouse)
+	}
+
 	api := router.Group("/api", h.userIdentity)
 	{
 		address := api.Group("/address")
@@ -60,6 +67,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			address.POST("/create", h.createAddress)
 			address.PUT("/")
 			address.DELETE("/")
+		}
+
+		profile := api.Group("/profile")
+		{
+			profile.GET("/", h.profile)
+			profile.PUT("/")
 		}
 
 		order := api.Group("/order")

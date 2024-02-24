@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -44,10 +45,13 @@ func (r *ProductPostgres) FindAll() ([]model.ProductsOutput, error) {
 	return products, err
 }
 
-func (r *ProductPostgres) FindById(id int) (model.Product, error) {
-	var product model.Product
-	query := fmt.Sprintf("SELECT name, category, manufacturer, price, image, description FROM %s WHERE article = $1", productTable)
-	err := r.db.Get(&product, query, id)
+func (r *ProductPostgres) FindById(article int) (model.ProductsOutput, error) {
+	var product model.ProductsOutput
+	query := fmt.Sprintf(`SELECT article, name, category, manufacturer, price, image, description, SUM(ps.amount) as amount FROM %s 
+	INNER JOIN %s AS ps ON article = ps.product_article
+	WHERE article = $1
+	GROUP BY article`, productTable, productStackTable)
+	err := r.db.Get(&product, query, article)
 	return product, err
 }
 
@@ -58,10 +62,15 @@ func (r *ProductPostgres) Delete(id int) error {
 	return err
 }
 
-func (r *ProductPostgres) Update(id int, input model.UpdateProductInput) error {
+func (r *ProductPostgres) Update(id int, input model.UpdateProductInput) (int, error) {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	ardId := 1
+
+	tx, err := r.db.Begin()
+	if err != nil {
+		return 0, err
+	}
 
 	if input.Name != nil {
 		setValues = append(setValues, fmt.Sprintf("name=$%d", ardId))
@@ -108,6 +117,24 @@ func (r *ProductPostgres) Update(id int, input model.UpdateProductInput) error {
 	logrus.Debugf("update query: %s", query)
 	logrus.Debugf("update args: %s", args)
 
-	_, err := r.db.Exec(query, args...)
-	return err
+	_, err = tx.Exec(query, args...)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	if (input.Amount == nil) && (input.Warehouse == nil) {
+		return id, tx.Commit()
+	} else if (input.Amount == nil) || (input.Warehouse == nil) {
+		tx.Rollback()
+		return 0, errors.New("amount or warehouse is empty")
+	}
+	query = fmt.Sprintf("UPDATE %s SET amount = $1 WHERE product_article = $2 AND warehouse_id = $3", productStackTable)
+	_, err = tx.Exec(query, *input.Amount, id, *input.Warehouse)
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	return id, tx.Commit()
 }

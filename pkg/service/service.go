@@ -6,17 +6,21 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user model.Account) (int, error)
+	CreateUser(user model.User) (int, error)
 	GenerateToken(login, password string) (string, error)
 	ParseToken(token string) (int, error)
 	Logout(token string) error
 }
 
+type User interface {
+	Find(id int) (model.UserOutput, error)
+}
+
 type Product interface {
 	Create(product model.Product) (int, error)
 	FindAll() ([]model.ProductsOutput, error)
-	FindById(id int) (model.Product, error)
-	Update(id int, input model.UpdateProductInput) error
+	FindById(id int) (model.ProductsOutput, error)
+	Update(id int, input model.UpdateProductInput) (int, error)
 	Delete(id int) error
 }
 
@@ -42,23 +46,31 @@ type Manufacturer interface {
 	Create(model.Manufacturer) (int, error)
 }
 
+type Warehouse interface {
+	FindAll() ([]model.Warehouse, error)
+}
+
 type Service struct {
 	Authorization
+	User
 	Product
 	Address
 	Order
 	Purchase
 	Category
 	Manufacturer
+	Warehouse
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
+		User:          NewUserService(repos.User),
 		Product:       NewProductService(repos.Product),
 		Address:       NewAddressService(repos.Address),
 		Order:         NewOrderService(repos.Order),
 		Category:      NewCategoryService(repos.Category),
 		Manufacturer:  NewManufacturerService(repos.Manufacturer),
+		Warehouse:     NewWarehouseService(repos.Warehouse),
 	}
 }

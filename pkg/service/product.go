@@ -21,7 +21,7 @@ func (s *ProductService) FindAll() ([]model.ProductsOutput, error) {
 	return s.repo.FindAll()
 }
 
-func (s *ProductService) FindById(id int) (model.Product, error) {
+func (s *ProductService) FindById(id int) (model.ProductsOutput, error) {
 	return s.repo.FindById(id)
 }
 
@@ -29,9 +29,9 @@ func (s *ProductService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
 
-func (s *ProductService) Update(id int, input model.UpdateProductInput) error {
+func (s *ProductService) Update(id int, input model.UpdateProductInput) (int, error) {
 	if err := input.Validate(); err != nil {
-		return err
+		return 0, err
 	}
 	return s.repo.Update(id, input)
 }

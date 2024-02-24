@@ -1,7 +1,7 @@
 package repository
 
 const (
-	accountTable      = "account"
+	userTable         = "account"
 	productTable      = "product"
 	productStackTable = "product_stack"
 	warehouseTable    = "warehouse"

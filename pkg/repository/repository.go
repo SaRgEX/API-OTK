@@ -6,16 +6,20 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user model.Account) (int, error)
-	GetUser(login, password string) (model.Account, error)
+	CreateUser(user model.User) (int, error)
+	GetUser(login, password string) (model.User, error)
 	Logout(token string) error
+}
+
+type User interface {
+	Find(id int) (model.UserOutput, error)
 }
 
 type Product interface {
 	Create(product model.Product) (int, error)
 	FindAll() ([]model.ProductsOutput, error)
-	FindById(id int) (model.Product, error)
-	Update(id int, input model.UpdateProductInput) error
+	FindById(id int) (model.ProductsOutput, error)
+	Update(id int, input model.UpdateProductInput) (int, error)
 	Delete(id int) error
 }
 
@@ -41,23 +45,31 @@ type Manufacturer interface {
 	Create(input model.Manufacturer) (int, error)
 }
 
+type Warehouse interface {
+	FindAll() ([]model.Warehouse, error)
+}
+
 type Repository struct {
 	Authorization
+	User
 	Product
 	Address
 	Order
 	Purchase
 	Category
 	Manufacturer
+	Warehouse
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
+		User:          NewUserPostgres(db),
 		Product:       NewProductPostgres(db),
 		Address:       NewAddressPostgres(db),
 		Order:         NewOrderPostgres(db),
 		Category:      NewCategoryPostgres(db),
 		Manufacturer:  NewManufacturerPostgres(db),
+		Warehouse:     NewWarehousePostgres(db),
 	}
 }

@@ -135,52 +135,29 @@ CREATE TABLE purchase
     PRIMARY KEY(product_article, order_id)
 );
 
-CREATE OR REPLACE FUNCTION check_product_quantity() RETURNS TRIGGER AS $$
-BEGIN
-    IF (SELECT amount FROM product_stack WHERE product_article = NEW.product_article) < NEW.amount THEN
-        RAISE EXCEPTION 'Product quantity in purchase exceeds product quantity in warehouse';
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+CREATE TABLE cart
+(
+    id INTEGER NOT NULL PRIMARY KEY,
+    account_id INTEGER NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES account(id)
+);
 
-CREATE TRIGGER check_product_quantity_trigger
-BEFORE INSERT ON purchase
-FOR EACH ROW
-EXECUTE FUNCTION check_product_quantity();
+CREATE TABLE product_cart
+(
+    product_article INTEGER NOT NULL,
+    cart_id INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    FOREIGN KEY (product_article) REFERENCES product(article),
+    FOREIGN KEY (cart_id) REFERENCES cart(id),
+    PRIMARY KEY(product_article, cart_id)
+);
 
-CREATE OR REPLACE FUNCTION update_product_stack()
-RETURNS TRIGGER AS $$
-BEGIN
-  UPDATE product_stack
-  SET amount = amount - NEW.amount
-  WHERE product_article = NEW.product_article;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_product_stack_trigger
-AFTER INSERT ON purchase
-FOR EACH ROW
-EXECUTE FUNCTION update_product_stack();
-
-CREATE TRIGGER update_product_stack_trigger
-AFTER INSERT ON purchase
-FOR EACH ROW
-EXECUTE FUNCTION update_product_stack();
-
-CREATE FUNCTION insert_product_stack_zero()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO product_stack
-  VALUES
-    (NEW.article, 1, 0);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER on_insert_product_stack_trigger
-AFTER INSERT ON product
-FOR EACH ROW
-EXECUTE FUNCTION insert_product_stack_zero();
+CREATE TABLE favorite
+(
+    account_id INTEGER NOT NULL,
+    product_article INTEGER NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES account(id),
+    FOREIGN KEY (product_article) REFERENCES product(article)
+    ON DELETE CASCADE,
+    PRIMARY KEY(account_id, product_article)
+);
