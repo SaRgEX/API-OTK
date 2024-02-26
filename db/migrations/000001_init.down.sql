@@ -10,6 +10,7 @@ DROP TABLE account;
 DROP TABLE role;
 DROP TABLE status;
 DROP TABLE order_status;
+DROP TABLE product_price;
 DROP TABLE product;
 DROP TABLE manufacturer;
 DROP TABLE category;

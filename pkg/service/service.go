@@ -50,6 +50,18 @@ type Warehouse interface {
 	FindAll() ([]model.Warehouse, error)
 }
 
+type Cart interface {
+	ViewCart(userId int) (*model.CartOutput, error)
+	AddProduct(props model.AddToCartProps) error
+	RemoveProduct(product int, cart int) error
+	ScaleProduct(props model.ScaleProductInput) error
+}
+
+type Favorite interface {
+	AddToFavorite(userId int, productId int) error
+	FindAll(userId int) ([]int, error)
+}
+
 type Service struct {
 	Authorization
 	User
@@ -60,6 +72,8 @@ type Service struct {
 	Category
 	Manufacturer
 	Warehouse
+	Cart
+	Favorite
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -72,5 +86,7 @@ func NewService(repos *repository.Repository) *Service {
 		Category:      NewCategoryService(repos.Category),
 		Manufacturer:  NewManufacturerService(repos.Manufacturer),
 		Warehouse:     NewWarehouseService(repos.Warehouse),
+		Cart:          NewCartService(repos.Cart),
+		Favorite:      NewFavoriteService(repos.Favorite),
 	}
 }

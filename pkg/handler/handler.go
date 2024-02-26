@@ -86,6 +86,22 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			order.PUT(":purchase/")
 			order.DELETE(":purchase/")
 		}
+
+		cart := api.Group("/cart")
+		{
+			cart.GET("/", h.viewCart)
+			cart.POST("/", h.addToCart)
+			cart.PUT("/", h.scaleProduct)
+			cart.DELETE("/", h.removeProduct)
+		}
+
+		favorite := api.Group("/favorite")
+		{
+			favorite.GET("/")
+			favorite.POST("/")
+			favorite.PUT("/")
+			favorite.DELETE("/")
+		}
 	}
 	return router
 }

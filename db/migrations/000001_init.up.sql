@@ -37,6 +37,9 @@ CREATE TABLE account
     FOREIGN KEY (role) REFERENCES role(name)
 );
 
+INSERT INTO account (first_name, last_name, patronumic, login, password_hash, status, role)
+VALUES ('Иван', 'Иванов', 'Иванович', 'admin', 'admin', 'gold', 'admin');
+
 CREATE TABLE category 
 (
     name VARCHAR(255) NOT NULL PRIMARY KEY
@@ -137,10 +140,12 @@ CREATE TABLE purchase
 
 CREATE TABLE cart
 (
-    id INTEGER NOT NULL PRIMARY KEY,
-    account_id INTEGER NOT NULL,
+    id SERIAL NOT NULL PRIMARY KEY,
+    account_id INTEGER NOT NULL UNIQUE,
     FOREIGN KEY (account_id) REFERENCES account(id)
 );
+
+INSERT INTO cart (account_id) VALUES(1);
 
 CREATE TABLE product_cart
 (
@@ -151,6 +156,7 @@ CREATE TABLE product_cart
     FOREIGN KEY (cart_id) REFERENCES cart(id),
     PRIMARY KEY(product_article, cart_id)
 );
+
 
 CREATE TABLE favorite
 (

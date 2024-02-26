@@ -49,6 +49,18 @@ type Warehouse interface {
 	FindAll() ([]model.Warehouse, error)
 }
 
+type Cart interface {
+	ViewCart(userId int) (*model.CartOutput, error)
+	AddProduct(props model.AddToCartProps) error
+	RemoveProduct(product int, cart int) error
+	ScaleProduct(input model.ScaleProductInput) error
+}
+
+type Favorite interface {
+	AddToFavorite(userId int, productId int) error
+	FindAll(userId int) ([]int, error)
+}
+
 type Repository struct {
 	Authorization
 	User
@@ -59,6 +71,8 @@ type Repository struct {
 	Category
 	Manufacturer
 	Warehouse
+	Cart
+	Favorite
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -71,5 +85,7 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Category:      NewCategoryPostgres(db),
 		Manufacturer:  NewManufacturerPostgres(db),
 		Warehouse:     NewWarehousePostgres(db),
+		Cart:          NewCartPostgres(db),
+		Favorite:      NewFavoritePostgres(db),
 	}
 }

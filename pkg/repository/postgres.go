@@ -10,4 +10,5 @@ const (
 	addressTable      = "address"
 	categoryTable     = "category"
 	manufacturerTable = "manufacturer"
+	cartTable         = "cart"
 )
