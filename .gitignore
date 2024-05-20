@@ -6,9 +6,14 @@
 *.json
 *.xml
 *.yaml
+*.yml
 .vscode
 
 
 *.sql
 
 /ui
+
+*.conf
+/data
+dockerfile
