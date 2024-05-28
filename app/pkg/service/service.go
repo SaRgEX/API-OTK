@@ -32,7 +32,7 @@ type Address interface {
 type Order interface {
 	Create(model.CreateInputOrder) (int, error)
 	View(accountId int) ([]model.OrderOutput, error)
-	ViewOne(id, accountId int) (model.OrderOutput, error)
+	ViewOne(id, accountId int) (model.OrderOutputProps, error)
 }
 
 type Purchase interface {

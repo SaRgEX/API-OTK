@@ -21,6 +21,6 @@ func (s *OrderService) View(accountId int) ([]model.OrderOutput, error) {
 	return s.repo.View(accountId)
 }
 
-func (s *OrderService) ViewOne(id, accountId int) (model.OrderOutput, error) {
+func (s *OrderService) ViewOne(id, accountId int) (model.OrderOutputProps, error) {
 	return s.repo.ViewOne(id, accountId)
 }

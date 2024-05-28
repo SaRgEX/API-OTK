@@ -86,8 +86,8 @@ func (r *OrderPostgres) View(accountId int) ([]model.OrderOutput, error) {
 	return orderModel, err
 }
 
-func (r *OrderPostgres) ViewOne(id, accountId int) (model.OrderOutput, error) {
-	var orderModel model.OrderOutput
+func (r *OrderPostgres) ViewOne(id, accountId int) (model.OrderOutputProps, error) {
+	var orderModel model.OrderOutputProps
 
 	getOrderQuery := fmt.Sprintf(
 		`SELECT o.id, order_date, status, a.street, a.house, a.apartment, a.city FROM %s AS o
@@ -95,6 +95,21 @@ func (r *OrderPostgres) ViewOne(id, accountId int) (model.OrderOutput, error) {
 		WHERE o.id = $1`,
 		orderTable)
 
-	err := r.db.Get(&orderModel, getOrderQuery, id)
+	err := r.db.Get(&orderModel.OrderOutput, getOrderQuery, id)
+
+	if err != nil {
+		return orderModel, err
+	}
+
+	getPurchaseQuery := fmt.Sprintf(
+		`SELECT product_article, amount, p.price FROM %s
+		JOIN %s AS p ON product_article = p.article
+		WHERE order_id = $1`,
+		purchaseTable,
+		productTable,
+	)
+
+	err = r.db.Select(&orderModel.Purchase, getPurchaseQuery, id)
+
 	return orderModel, err
 }

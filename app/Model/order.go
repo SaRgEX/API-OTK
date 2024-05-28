@@ -20,6 +20,11 @@ type CreateInputOrder struct {
 	Status    string     `json:"-"`
 }
 
+type OrderOutputProps struct {
+	OrderOutput OrderOutput      `json:"order"`
+	Purchase    []PurchaseOutput `json:"purchase"`
+}
+
 type OrderOutput struct {
 	Id        int    `json:"id" db:"id"`
 	OrderDate string `json:"order_date" db:"order_date"`
@@ -29,4 +34,10 @@ type OrderOutput struct {
 	House     string `json:"house" db:"house"`
 	Apartment string `json:"apartment" db:"apartment"`
 	City      string `json:"city" db:"city"`
+}
+
+type PurchaseOutput struct {
+	ProductArticle int `json:"product_article" db:"product_article"`
+	Amount         int `json:"amount" db:"amount"`
+	Price          int `json:"price" db:"price"`
 }
