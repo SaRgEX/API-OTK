@@ -72,6 +72,37 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
+func (h *Handler) createUserWithRole(c *gin.Context) {
+
+	var input model.UserWithRole
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.Authorization.CreateUserWithRole(input)
+
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
+}
+
+// @Summary Logout
+// @Tags auth
+// @Description logout
+// @ID logout
+// @Accept  json
+// @Produce  json
+// @Success 200 {string} string "ok"
+// @Failure 400,404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
 func (h *Handler) logout(c *gin.Context) {
 	err := h.services.Authorization.Logout(c.GetHeader("Authorization"))
 

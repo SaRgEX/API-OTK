@@ -35,11 +35,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	products := router.Group("/products")
 	{
 		products.GET("/", h.findAll)
-		products.POST("/", h.createProduct)
-
 		products.GET(":id/", h.findById)
-		products.PUT(":id/", h.updateProduct)
-		products.DELETE(":id/", h.deleteProduct)
+
 	}
 
 	category := router.Group("/category")
@@ -59,9 +56,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		warehouse.GET("/", h.findAllWarehouse)
 	}
 
-	api := router.Group("/api", h.userIdentity)
+	my := router.Group("/my", h.userIdentity)
 	{
-		address := api.Group("/address")
+		address := my.Group("/address")
 		{
 			address.GET("/", h.getAllAddress)
 			address.POST("/", h.createAddress)
@@ -69,13 +66,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			address.DELETE("/")
 		}
 
-		profile := api.Group("/profile")
+		profile := my.Group("/profile")
 		{
 			profile.GET("/", h.profile)
 			profile.PUT("/")
 		}
 
-		order := api.Group("/order")
+		order := my.Group("/order")
 		{
 			order.GET("/", h.viewOrders)
 			order.POST("/", h.createOrder)
@@ -87,7 +84,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			order.DELETE(":purchase/")
 		}
 
-		cart := api.Group("/cart")
+		cart := my.Group("/cart")
 		{
 			cart.GET("/", h.viewCart)
 			cart.POST("/", h.addToCart)
@@ -96,13 +93,30 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			cart.DELETE(":id/", h.removeProduct)
 		}
 
-		favorite := api.Group("/favorite")
+		favorite := my.Group("/favorite")
 		{
 			favorite.GET("/", h.findAllFavorite)
 			favorite.POST("/", h.addToFavorite)
 			favorite.PUT("/")
 			favorite.DELETE("/", h.removeFavorite)
 		}
+
 	}
+
+	admin := router.Group("/admin", h.adminIdentity)
+	{
+		products := admin.Group("/products")
+		{
+			products.POST("/", h.createProduct)
+			products.PUT(":id/", h.updateProduct)
+			products.DELETE(":id/", h.deleteProduct)
+		}
+
+		auth := admin.Group("/sign-up")
+		{
+			auth.POST("/", h.createUserWithRole)
+		}
+	}
+
 	return router
 }

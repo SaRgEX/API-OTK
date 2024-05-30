@@ -7,7 +7,8 @@ import (
 
 type Authorization interface {
 	CreateUser(user model.User) (int, error)
-	GetUser(login, password string) (model.User, error)
+	CreateUserWithRole(user model.UserWithRole) (int, error)
+	GetUser(login, password string) (model.UserWithRole, error)
 	Logout(token string) error
 }
 

@@ -38,6 +38,34 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	c.Set(userCtx, userId)
 }
 
+func (h *Handler) adminIdentity(c *gin.Context) {
+
+	header := c.GetHeader(autorizationHeader)
+	if header == "" {
+		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
+		return
+	}
+
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 {
+		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")
+		return
+	}
+
+	user, err := h.services.ParseToken(headerParts[1])
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	if user.Role != "администратор" && user.Role != "менеджер" {
+		newErrorResponse(c, http.StatusUnauthorized, "access denied")
+		return
+	}
+
+	c.Set(userCtx, user)
+}
+
 func getUserId(c *gin.Context) (int, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {

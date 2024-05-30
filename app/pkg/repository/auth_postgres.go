@@ -19,19 +19,25 @@ func (r *AuthPostgres) CreateUser(account model.User) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (first_name, last_name, patronumic, login, password_hash) values ($1, $2, $3, $4, $5) RETURNING id", userTable)
 	row := r.db.QueryRow(query, account.FirstName, account.LastName, account.Patronumic, account.Login, account.Password)
-	if account.Role != "" && account.Status != "" {
-		query = fmt.Sprintf("INSERT INTO %s (first_name, last_name, patronumic, login, password_hash, status, role) values ($1, $2, $3, $4, $5, $6, $7) RETURNING id", userTable)
-		row = r.db.QueryRow(query, account.FirstName, account.LastName, account.Patronumic, account.Login, account.Password, account.Status, account.Role)
-	}
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(login, password string) (model.User, error) {
-	var user model.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE login=$1 AND password_hash=$2", userTable)
+func (r *AuthPostgres) CreateUserWithRole(account model.UserWithRole) (int, error) {
+	var id int
+	query := fmt.Sprintf("INSERT INTO %s (first_name, last_name, patronumic, login, password_hash, status, role) values ($1, $2, $3, $4, $5, $6, $7) RETURNING id", userTable)
+	row := r.db.QueryRow(query, account.FirstName, account.LastName, account.Patronumic, account.Login, account.Password, account.Status, account.Role)
+	if err := row.Scan(&id); err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+func (r *AuthPostgres) GetUser(login, password string) (model.UserWithRole, error) {
+	var user model.UserWithRole
+	query := fmt.Sprintf("SELECT id, role FROM %s WHERE login=$1 AND password_hash=$2", userTable)
 	err := r.db.Get(&user, query, login, password)
 	return user, err
 }
