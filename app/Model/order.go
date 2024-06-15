@@ -36,8 +36,18 @@ type OrderOutput struct {
 	City      string `json:"city" db:"city"`
 }
 
+type AdminOrderOutput struct {
+	OrderOutput
+	AccountId int `json:"account_id" db:"account_id"`
+	UserOutputAdmin
+}
+
 type PurchaseOutput struct {
 	ProductArticle int `json:"product_article" db:"product_article"`
 	Amount         int `json:"amount" db:"amount"`
 	Price          int `json:"price" db:"price"`
+}
+
+type UpdateOrderStatus struct {
+	Status string `json:"order_status" binding:"required"`
 }

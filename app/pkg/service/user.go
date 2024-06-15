@@ -16,3 +16,7 @@ func NewUserService(repo repository.User) *UserService {
 func (s *UserService) Find(id int) (model.UserOutput, error) {
 	return s.repo.Find(id)
 }
+
+func (s *UserService) UpdateUser(id int, input model.UpdateUser) error {
+	return s.repo.UpdateUser(id, input)
+}

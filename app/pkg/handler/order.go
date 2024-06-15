@@ -105,3 +105,33 @@ func (h *Handler) viewOrder(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &output)
 }
+
+func (h *Handler) adminOrders(c *gin.Context) {
+	output, err := h.services.Order.AdminOrder()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, &output)
+}
+
+func (h *Handler) updateOrder(c *gin.Context) {
+	var input model.UpdateOrderStatus
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	output, err := h.services.Order.UpdateOrderStatus(id, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": output,
+	})
+}

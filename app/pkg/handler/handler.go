@@ -36,7 +36,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		products.GET("/", h.findAll)
 		products.GET(":id/", h.findById)
-
 	}
 
 	category := router.Group("/category")
@@ -69,7 +68,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		profile := my.Group("/profile")
 		{
 			profile.GET("/", h.profile)
-			profile.PUT("/")
+			profile.PUT("/", h.updateUser)
 		}
 
 		order := my.Group("/order")
@@ -110,6 +109,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			products.POST("/", h.createProduct)
 			products.PUT(":id/", h.updateProduct)
 			products.DELETE(":id/", h.deleteProduct)
+		}
+
+		productStack := admin.Group("/product-stack")
+		{
+			productStack.POST("/")
+			productStack.PUT(":id/")
+			productStack.DELETE(":id/")
+		}
+
+		orders := admin.Group("/orders")
+		{
+			orders.GET("/", h.adminOrders)
+			orders.PUT(":id/", h.updateOrder)
 		}
 
 		auth := admin.Group("/sign-up")

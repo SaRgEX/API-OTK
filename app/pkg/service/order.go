@@ -24,3 +24,11 @@ func (s *OrderService) View(accountId int) ([]model.OrderOutput, error) {
 func (s *OrderService) ViewOne(id, accountId int) (model.OrderOutputProps, error) {
 	return s.repo.ViewOne(id, accountId)
 }
+
+func (s *OrderService) AdminOrder() ([]model.AdminOrderOutput, error) {
+	return s.repo.AdminOrder()
+}
+
+func (s *OrderService) UpdateOrderStatus(id int, status model.UpdateOrderStatus) (int, error) {
+	return s.repo.UpdateOrderStatus(id, status)
+}

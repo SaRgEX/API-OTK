@@ -113,3 +113,22 @@ func (r *OrderPostgres) ViewOne(id, accountId int) (model.OrderOutputProps, erro
 
 	return orderModel, err
 }
+
+func (r *OrderPostgres) AdminOrder() ([]model.AdminOrderOutput, error) {
+	var orderModel []model.AdminOrderOutput
+	query := fmt.Sprintf(
+		`SELECT o.id, order_date, o.status, a.city, a.street, a.house, a.apartment, account_id, ac.first_name, ac.last_name, ac.patronumic, ac.phone, ac.email FROM %s AS o
+		JOIN %s a ON address = a.id
+		JOIN %s AS ac ON account_id = ac.id`,
+		orderTable, addressTable, userTable,
+	)
+
+	err := r.db.Select(&orderModel, query)
+	return orderModel, err
+}
+
+func (r *OrderPostgres) UpdateOrderStatus(id int, status model.UpdateOrderStatus) (int, error) {
+	query := fmt.Sprintf("UPDATE %s SET status = $1 WHERE id = $2", orderTable)
+	_, err := r.db.Exec(query, status.Status, id)
+	return id, err
+}

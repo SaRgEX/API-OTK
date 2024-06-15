@@ -15,6 +15,7 @@ type Authorization interface {
 
 type User interface {
 	Find(id int) (model.UserOutput, error)
+	UpdateUser(id int, input model.UpdateUser) error
 }
 
 type Product interface {
@@ -34,6 +35,8 @@ type Order interface {
 	Create(model.CreateInputOrder) (int, error)
 	View(accountId int) ([]model.OrderOutput, error)
 	ViewOne(id, accountId int) (model.OrderOutputProps, error)
+	AdminOrder() ([]model.AdminOrderOutput, error)
+	UpdateOrderStatus(id int, status model.UpdateOrderStatus) (int, error)
 }
 
 type Purchase interface {
