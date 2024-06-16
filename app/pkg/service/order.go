@@ -32,3 +32,7 @@ func (s *OrderService) AdminOrder() ([]model.AdminOrderOutput, error) {
 func (s *OrderService) UpdateOrderStatus(id int, status model.UpdateOrderStatus) (int, error) {
 	return s.repo.UpdateOrderStatus(id, status)
 }
+
+func (s *OrderService) OrderStatus() ([]model.OrderStatusOutputs, error) {
+	return s.repo.OrderStatus()
+}

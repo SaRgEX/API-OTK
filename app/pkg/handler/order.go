@@ -135,3 +135,12 @@ func (h *Handler) updateOrder(c *gin.Context) {
 		"id": output,
 	})
 }
+
+func (h *Handler) orderStatus(c *gin.Context) {
+	output, err := h.services.Order.OrderStatus()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, &output)
+}

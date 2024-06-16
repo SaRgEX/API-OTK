@@ -102,7 +102,7 @@ func (r *OrderPostgres) ViewOne(id, accountId int) (model.OrderOutputProps, erro
 	}
 
 	getPurchaseQuery := fmt.Sprintf(
-		`SELECT product_article, amount, p.price FROM %s
+		`SELECT p.article, p.name, p.manufacturer, p.category, p.price, p.image, p.description, purchase.amount, p.price FROM %s
 		JOIN %s AS p ON product_article = p.article
 		WHERE order_id = $1`,
 		purchaseTable,
@@ -131,4 +131,16 @@ func (r *OrderPostgres) UpdateOrderStatus(id int, status model.UpdateOrderStatus
 	query := fmt.Sprintf("UPDATE %s SET status = $1 WHERE id = $2", orderTable)
 	_, err := r.db.Exec(query, status.Status, id)
 	return id, err
+}
+
+func (r *OrderPostgres) OrderStatus() ([]model.OrderStatusOutputs, error) {
+	var orderStatus []model.OrderStatusOutputs
+
+	query := fmt.Sprintf(
+		`SELECT name FROM %s`,
+		orderStatusTable,
+	)
+	err := r.db.Select(&orderStatus, query)
+
+	return orderStatus, err
 }

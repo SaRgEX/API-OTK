@@ -122,6 +122,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			orders.GET("/", h.adminOrders)
 			orders.PUT(":id/", h.updateOrder)
+
+			status := orders.Group("/status")
+			{
+				status.GET("/", h.orderStatus)
+			}
 		}
 
 		auth := admin.Group("/sign-up")

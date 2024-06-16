@@ -42,10 +42,13 @@ type AdminOrderOutput struct {
 	UserOutputAdmin
 }
 
+type OrderStatusOutputs struct {
+	Status string `json:"status" db:"name"`
+}
+
 type PurchaseOutput struct {
-	ProductArticle int `json:"product_article" db:"product_article"`
-	Amount         int `json:"amount" db:"amount"`
-	Price          int `json:"price" db:"price"`
+	Product
+	Amount int `json:"amount" db:"amount"`
 }
 
 type UpdateOrderStatus struct {

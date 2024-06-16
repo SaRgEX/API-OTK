@@ -36,6 +36,7 @@ type Order interface {
 	ViewOne(id, account_id int) (model.OrderOutputProps, error)
 	AdminOrder() ([]model.AdminOrderOutput, error)
 	UpdateOrderStatus(id int, status model.UpdateOrderStatus) (int, error)
+	OrderStatus() ([]model.OrderStatusOutputs, error)
 }
 
 type Purchase interface {

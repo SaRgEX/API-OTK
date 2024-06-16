@@ -13,4 +13,5 @@ const (
 	cartTable          = "cart"
 	favoriteTable      = "favorite"
 	clientAddressTable = "client_address"
+	orderStatusTable   = "order_status"
 )
