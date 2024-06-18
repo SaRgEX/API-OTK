@@ -38,18 +38,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		products.GET(":id/", h.findById)
 	}
 
-	category := router.Group("/category")
-	{
-		category.GET("/", h.findAllCategory)
-		category.POST("/", h.createCategory)
-	}
-
-	manufacturer := router.Group("/manufacturer")
-	{
-		manufacturer.GET("/", h.findAllManufacturer)
-		manufacturer.POST("/", h.createManufacturer)
-	}
-
 	warehouse := router.Group("/warehouse")
 	{
 		warehouse.GET("/", h.findAllWarehouse)
@@ -69,6 +57,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			profile.GET("/", h.profile)
 			profile.PUT("/", h.updateUser)
+			profile.POST("/")
 		}
 
 		order := my.Group("/order")
@@ -129,9 +118,26 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 		}
 
+		image := admin.Group("/image")
+		{
+			image.POST("/", h.uploadImage)
+		}
+
 		auth := admin.Group("/sign-up")
 		{
 			auth.POST("/", h.createUserWithRole)
+		}
+
+		category := admin.Group("/category")
+		{
+			category.GET("/", h.findAllCategory)
+			category.POST("/", h.createCategory)
+		}
+
+		manufacturer := admin.Group("/manufacturer")
+		{
+			manufacturer.GET("/", h.findAllManufacturer)
+			manufacturer.POST("/", h.createManufacturer)
 		}
 	}
 

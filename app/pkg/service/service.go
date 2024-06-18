@@ -71,6 +71,10 @@ type Favorite interface {
 	RemoveFromFavorite(userId int, productId int) error
 }
 
+type Image interface {
+	UploadImage(image model.ImageInput) (string, error)
+}
+
 type Service struct {
 	Authorization
 	User
@@ -83,6 +87,7 @@ type Service struct {
 	Warehouse
 	Cart
 	Favorite
+	Image
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -97,5 +102,6 @@ func NewService(repos *repository.Repository) *Service {
 		Warehouse:     NewWarehouseService(repos.Warehouse),
 		Cart:          NewCartService(repos.Cart),
 		Favorite:      NewFavoriteService(repos.Favorite),
+		Image:         NewImageService(),
 	}
 }
